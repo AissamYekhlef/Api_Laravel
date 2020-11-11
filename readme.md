@@ -13,6 +13,7 @@ is a projetct can understand with it the concepts of laravel api with **[JWT-aut
 - Run __php artisan key:generate__
 - Run __composer require tymon/jwt-auth__
 - Run __php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"__
+- Run __php artisan jwt:secret__
 - Run __php artisan migrate --seed__ (it has some seeded data for your testing)
 
 ---
