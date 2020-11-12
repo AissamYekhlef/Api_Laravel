@@ -18,9 +18,10 @@ use Illuminate\Http\Request;
 // });
 
 // all routes / api here must be api authenticated
-Route::group(['middleware' => 'api', 'namespace'=>'Api'], function () {
-    Route::get('get-main-cat', 'CategoriesController@index');
-    // Route::get('get-main-cat', function(){
-    //     return 'Hello Api ';
-    // });
+Route::group(['middleware' => ['api', 'checkPassword', 'changeLanguage'], 'namespace'=>'Api'], function () {
+    Route::post('get-all', 'CategoriesController@index');
+    Route::post('get-main-cat', 'CategoriesController@getMainCat');
+    Route::post('get-cat-id', 'CategoriesController@getCategoryByID');
+    Route::post('change-cat-status', 'CategoriesController@changeStatus');
+
 });

@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/hello', function () {
-    return "hello";
+Route::get('/lang', function () {
+    return app()->getLocale();
+});
+Route::get('/lang/ar', function () {
+    app()->setLocale('ar');
+    return app()->getLocale();
 });
