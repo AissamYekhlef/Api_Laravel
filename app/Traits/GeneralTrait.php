@@ -10,13 +10,13 @@ trait GeneralTrait
         return app()->getLocale();
     }
 
-    public function returnError($errNum, $msg)
+    public function returnError($msg="", $errNum="Error")
     {
         return response()->json([
             'status' => false,
             'errNum' => $errNum,
-            'msg' => $msg
-        ]);
+            'message' => $msg
+        ], 400);
     }
 
 
@@ -25,7 +25,7 @@ trait GeneralTrait
         return [
             'status' => true,
             'errNum' => $errNum,
-            'msg' => $msg
+            'message' => $msg
         ];
     }
 
@@ -34,7 +34,7 @@ trait GeneralTrait
         return response()->json([
             'status' => true,
             'errNum' => "S000",
-            'msg' => $msg,
+            'message' => $msg,
             $key => $value
         ]);
     }
@@ -51,6 +51,37 @@ trait GeneralTrait
     {
         $inputs = array_keys($validator->errors()->toArray());
         $code = $this->getErrorCode($inputs[0]);
+        return $code;
+    }
+
+    public function getErrorCode($input){
+        $code = 'NoErrorCode';
+        switch($input){
+            case "name":
+                $code = 'E001';
+                break;
+            case "password":
+                $code = 'E002';
+                break;
+            case "mobile":
+                $code = 'E003';
+                break;
+            case "id_number":
+                $code = 'E004';
+                break;  
+            case "birth_date":
+                $code = 'E005';
+                break;
+            case "agreement":
+                $code = 'E006';
+                break;
+            case "email":
+                $code = 'E007';
+                break;
+            case "city_id":
+                $code = 'E008';
+                break;  
+        }
         return $code;
     }
 }
