@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,12 @@
 // });
 
 // all routes / api here must be api authenticated
+Route::group([
+    // to use v1 version 1 from the api
+    'prefix' => 'v1'
+],function(){
+
+
 
 Route::group([
     'middleware' => ['api', 'checkPassword', 'changeLanguage'], 
@@ -28,7 +35,6 @@ Route::group([
     Route::post('change-cat-status', 'CategoriesController@changeStatus');
     
     Route::group([
-        // 'middleware' => '',
         'prefix'=>'admin',
         'namespace'=>'Admin'
     ],function(){
@@ -36,11 +42,24 @@ Route::group([
         Route::post('logout','AuthController@logout');
         Route::post('me','AuthController@me');
         Route::post('refresh','AuthController@refresh');
+        Route::post('once','AuthController@once');
     });
 });
 
 
+Route::group([
+    'prefix' => 'trans',
+],function(){
+    Route::get('get','TranslateController@index');
+    Route::get('get/{translate}','TranslateController@show');
+    Route::get('search','TranslateController@search');
 
-// Route::group(['middleware' => ['api', 'checkPassword', 'changeLanguage', 'checkAdminToken:admin-api'], 'namespace'=>'Api'], function () {
-//     Route::post('admin/c', 'CategoriesController@index');
-// });
+    // How need admin-api
+    Route::post('update/{translate}','TranslateController@update');
+    Route::post('add','TranslateController@store');
+    Route::post('add_list','TranslateController@store_list');
+    Route::delete('delete/{translate}','TranslateController@destroy');
+});
+
+
+});

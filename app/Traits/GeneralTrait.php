@@ -29,13 +29,13 @@ trait GeneralTrait
         ];
     }
 
-    public function returnData($key, $value, $msg = "")
+    public function returnData($key, $value, $msg = "", array $options = [])
     {
         return response()->json([
             'status' => true,
-            'errNum' => "S000",
             'message' => $msg,
-            $key => $value
+            'options' => $options,
+            $key => $value,
         ]);
     }
 

@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -15,8 +13,21 @@ class Admin extends  Authenticatable implements JWTSubject
         'name', 'email', 'password', 'created_at', 'updated_at'
     ];
 
-        //Added by JWTSubject abstract methods
+        
 
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'created_at', 
+        'updated_at'
+    ];
+
+    //Added by JWTSubject abstract methods
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

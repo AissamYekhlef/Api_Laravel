@@ -18,28 +18,28 @@ class CheckAdminToken
      */
     public function handle($request, Closure $next)
     {
-        $user = null;
+        $admin = null;
         try {
-            $user = JWTAuth::parseToken()->authenticate();
+            $admin = JWTAuth::parseToken()->authenticate();
         } catch (\Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return $this -> returnError('E3001','INVALID_TOKEN');
+                return $this -> returnError('INVALID_TOKEN', 'E3001');
             } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return $this -> returnError('E3001','EXPIRED_TOKEN');
+                return $this -> returnError('EXPIRED_TOKEN', 'E3001');
             } else {
-                return $this -> returnError('E3001','TOKEN_NOTFOUND');
+                return $this -> returnError('TOKEN_NOTFOUND', 'E3001');
             }
         } catch (\Throwable $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-                return $this -> returnError('E3001','INVALID_TOKEN');
+                return $this -> returnError('INVALID_TOKEN', 'E3001');
             } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-                return $this -> returnError('E3001','EXPIRED_TOKEN');
+                return $this -> returnError('EXPIRED_TOKEN', 'E3001');
             } else {
-                return $this -> returnError('E3001','TOKEN_NOTFOUND');
+                return $this -> returnError('TOKEN_NOTFOUND', 'E3001');
             }
         }
 
-        if (!$user)
+        if (!$admin)
         $this -> returnError('E401','Unauthenticated');
 
         return $next($request);

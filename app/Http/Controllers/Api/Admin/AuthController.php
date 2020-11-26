@@ -6,18 +6,33 @@ use App\Http\Controllers\Controller;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
-use Auth;
+// use Auth;
 use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-// use Tymon\JWTAuth\JWTAuth;
 
 // use Tymon\JWTAuth\JWTAuth;
 
 class AuthController extends Controller
 {
     use GeneralTrait;
+
+
+    public function __construct()
+    {
+        $this->middleware([
+           'api', 
+           'checkAdminToken',
+        ],[
+            'except' => [
+                'login',
+                'once',
+            ]
+        ]);
+    }
+
 
     public function login(Request $request){
         
@@ -67,7 +82,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        try{
+     
             // $user = auth('admin-api')->userOrFail();
             $user = JWTAuth::parseToken()->authenticate();
             $payload = auth('admin-api')->payload();
@@ -85,23 +100,6 @@ class AuthController extends Controller
                     //     'pay_email' => $payload['email']
                     // ]
                 ]);
-        }catch(\Tymon\JWTAuth\Exceptions\UserNotDefinedException $ex){
-            return response()->json(
-                $this->returnError("You must be logged-in to show the Authentified User.", 400)
-            , 400);
-        }catch(\Tymon\JWTAuth\Exceptions\TokenInvalidException $ex){
-            return response()->json(
-                $this->returnError('Token is Invalid !', 400)
-            , 400);
-        }catch(\Tymon\JWTAuth\Exceptions\JWTException $ex){
-            return response()->json(
-                $this->returnError('There is a Token Exception !', 400)
-            , 400);
-        }catch(\Tymon\JWTAuth\Exceptions\TokenExpiredException $ex){
-            return response()->json(
-                $this->returnError('Token is Expireded !', 400)
-            , 400);
-        }
         
     }
 
@@ -113,17 +111,17 @@ class AuthController extends Controller
     public function logout()
     {
 
-        try{
-            $user = auth('admin-api')->userOrFail();
+      
+            $user = auth('admin-api')->user();
             auth('admin-api')->logout();
 
             return response()->json([
                 'message' => 'Successfully logged out, Goodbye '.$user->name
             ]);
-
-        }catch(\Tymon\JWTAuth\Exceptions\UserNotDefinedException $ex){
-            return $this->returnError("You must be logged-in to Logout.");
-        }
+        //   try{
+        //         }catch(\Tymon\JWTAuth\Exceptions\UserNotDefinedException $ex){
+        //             return $this->returnError("You must be logged-in to Logout.");
+        //         }
 
     }
 
@@ -134,9 +132,9 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        if(!auth('admin-api')->user()){
-            return $this->returnError("You must be logged-in to refreh the JWT Token.");
-        }
+        // if(!auth('admin-api')->user()){
+        //     return $this->returnError("You must be logged-in to refreh the JWT Token.");
+        // }
         return $this->respondWithToken(auth('admin-api')->refresh());
     }
 
@@ -154,5 +152,18 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('admin-api')->factory()->getTTL() * 60
         ]);
+    }
+
+    /*
+    * once method don't return the token but test the auth by guard once
+    *
+    */
+    public function once(Request $request)
+    {
+
+        $credentials = $request->only(['email', 'password']);
+        $token =  auth('admin-api')->once($credentials);
+
+        return $this->respondWithToken($token);
     }
 }
