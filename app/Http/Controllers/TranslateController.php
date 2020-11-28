@@ -173,15 +173,14 @@ class TranslateController extends Controller
     {
 
         $term =  $request->term;
-        $term = strtoupper($term);
-        // TODO : ignore the case of words
-        $results =  Translate::where(DB::raw('upper(wEN)'), 'LIKE', '%'. $term . '%')
+        $term = Str::slug($term, '_'); // to make the term searched to snake case 
+        $term = strtoupper($term); // and make it 
+
+        $results =  Translate::where('wEN', 'LIKE', '%'. $term . '%')
                                 ->orWhere('term', 'LIKE', '%'. $term . '%')
-                                ->orWhere('wAR', 'LIKE', '%'. $term . '%')  
-                                // ->paginate(20)
-                                ->get()
-                                ;
-            // dd($results);
+                                ->orWhere('wAR', 'LIKE', '%'. $term . '%')
+                                ->get();
+
         if($results->count() > 0){
             return $this->returnData(
                     'result', $results, 
