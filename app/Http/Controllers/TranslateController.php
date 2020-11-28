@@ -176,6 +176,8 @@ class TranslateController extends Controller
         if(!preg_match('/\p{Arabic}/u', $term)){
             $term = str_replace(' ', '_', $term); // to make the term searched to snake case 
             $term = strtoupper($term); // and make it 
+        }else{
+            $term = json_decode($term);
         }
         $results =  Translate::where('wEN', 'LIKE', '%'. $term . '%')
                                 ->orWhere('term', 'LIKE', '%'. $term . '%')
